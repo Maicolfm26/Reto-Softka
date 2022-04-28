@@ -1,0 +1,178 @@
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xml:lang="es" lang="es">
+<ui:composition template="../WEB-INF/templateAdmin.xhtml">
+    <ui:define name="title">Preguntas</ui:define>
+    <ui:define name="content">
+        <section class="container">
+            <h:form id="form">
+                <div class="card crud-demo">
+                    <p:growl id="messages" showDetail="true"/>
+
+                    <p:toolbar>
+                        <p:toolbarGroup>
+                            <p:commandButton value="Nueva" icon="pi pi-plus" actionListener="#{preguntaBean.openNew}"
+                                             update=":form:manage-pregunta-content"
+                                             oncomplete="PF('managePreguntaDialog').show()"
+                                             styleClass="ui-button-success" style="margin-right: .5rem">
+                                <p:resetInput target=":form:manage-pregunta-content"/>
+                            </p:commandButton>
+                            <p:commandButton id="delete-preguntas-button" value="#{preguntaBean.deleteButtonMessage}"
+                                             icon="pi pi-trash" actionListener="#{preguntaBean.deleteSelectedPreguntas}"
+                                             styleClass="ui-button-danger"
+                                             disabled="#{!preguntaBean.hasSelectedPreguntas()}"
+                                             update="@this">
+                                <p:confirm header="Confirmación" message="¿Eliminar las preguntas seleccionadas?"
+                                           icon="pi pi-exclamation-triangle"/>
+                            </p:commandButton>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                    <p:dataTable id="dt-preguntas" widgetVar="dtPreguntas" var="pregunta"
+                                 value="#{preguntaBean.listadoPreguntas}"
+                                 reflow="true" styleClass="preguntas-table"
+                                 selection="#{preguntaBean.selectedPreguntas}" rowKey="#{pregunta.idPregunta}"
+                                 paginator="true"
+                                 rows="10" rowSelectMode="add" paginatorPosition="bottom">
+                        <f:facet name="header">
+                            <div class="preguntas-table-header">
+                                <span style="font-weight: bold">Preguntas</span>
+
+                                <span class="filter-container ui-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <p:inputText id="globalFilter" onkeyup="PF('dtPreguntas').filter()" placeholder="Buscar"/>
+                    </span>
+
+                            </div>
+                        </f:facet>
+
+                        <p:ajax event="rowSelect" update=":form:delete-preguntas-button"/>
+                        <p:ajax event="rowUnselect" update=":form:delete-preguntas-button"/>
+                        <p:ajax event="rowSelectCheckbox" update=":form:delete-preguntas-button"/>
+                        <p:ajax event="rowUnselectCheckbox" update=":form:delete-preguntas-button"/>
+                        <p:ajax event="toggleSelect" update=":form:delete-preguntas-button"/>
+
+                        <p:column selectionMode="multiple" exportable="false"></p:column>
+
+                        <p:column headerText="Name" sortBy="#{pregunta.descripcion}" filterBy="#{pregunta.descripcion}">
+                            <h:outputText value="#{pregunta.descripcion}"/>
+                        </p:column>
+                        <p:column exportable="false">
+                            <p:commandButton icon="pi pi-pencil" update=":form:manage-pregunta-content"
+                                             action="#{preguntaBean.seleccionarPregunta(pregunta)}"
+                                             oncomplete="PF('managePreguntaDialog').show()"
+                                             styleClass="edit-button rounded-button ui-button-success" process="@this">
+                                <p:resetInput target=":form:manage-pregunta-content"/>
+                            </p:commandButton>
+                            <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash" process="@this"
+                                             oncomplete="PF('deletePreguntaDialog').show()">
+                                <f:setPropertyActionListener value="#{pregunta}"
+                                                             target="#{preguntaBean.selectedPregunta}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                    </p:dataTable>
+
+                    <p:dialog header="Detalles de pregunta" showEffect="fade" modal="true"
+                              widgetVar="managePreguntaDialog" responsive="true">
+                        <p:outputPanel id="manage-pregunta-content" class="ui-fluid">
+                            <p:outputPanel rendered="#{not empty preguntaBean.selectedPregunta}">
+                                <p:scrollPanel style="width: 700px; height: 250px" mode="native">
+                                    <div class="p-field">
+                                        <div class="row mb-5">
+                                            <p:outputLabel styleClass="col-2" for="descripcion" value="Pregunta"/>
+                                            <p:inputTextarea styleClass="col-6" rows="6" cols="33" id="descripcion"
+                                                             value="#{preguntaBean.selectedPregunta.descripcion}"
+                                                             required="true"/>
+                                            <p:message styleClass="col-3" for="descripcion"/>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <p:outputLabel styleClass="col-2" for="opcion1" value="Opcion 1:"/>
+                                            <p:inputText styleClass="col-6" id="opcion1"
+                                                         value="#{preguntaBean.respuesta1.descripcion}"
+                                                         required="true"/>
+                                            <p:message styleClass="col-3" for="opcion1"/>
+                                        </div>
+                                        <div class="mb-5" style="display: flex; align-items: center;">
+                                            <p style="display: inline; margin: 0;">Valida:</p>
+                                            <p:toggleSwitch value="#{preguntaBean.respuesta1.valida}"
+                                                            style="margin-left: 10px;" id="valida1"/>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <p:outputLabel styleClass="col-2" for="opcion2" value="Opcion 2:"/>
+                                            <p:inputText styleClass="col-6" id="opcion2"
+                                                         value="#{preguntaBean.respuesta2.descripcion}"
+                                                         required="true"/>
+                                            <p:message styleClass="col-3" for="opcion2"/>
+                                        </div>
+                                        <div class="mb-5" style="display: flex; align-items: center;">
+                                            <p style="display: inline; margin: 0;">Valida:</p>
+                                            <p:toggleSwitch value="#{preguntaBean.respuesta2.valida}"
+                                                            style="margin-left: 10px;" id="valida2"/>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <p:outputLabel styleClass="col-2" for="opcion3" value="Opcion 3:"/>
+                                            <p:inputText styleClass="col-6" id="opcion3"
+                                                         value="#{preguntaBean.respuesta3.descripcion}"
+                                                         required="true"/>
+                                            <p:message styleClass="col-3" for="opcion3"/>
+                                        </div>
+                                        <div class="mb-5" style="display: flex; align-items: center;">
+                                            <p style="display: inline; margin: 0;">Valida:</p>
+                                            <p:toggleSwitch value="#{preguntaBean.respuesta3.valida}"
+                                                            style="margin-left: 10px;" id="valida3"/>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <p:outputLabel styleClass="col-2" for="opcion4" value="Opcion 4:"/>
+                                            <p:inputText styleClass="col-6" id="opcion4"
+                                                         value="#{preguntaBean.respuesta4.descripcion}"
+                                                         required="true"/>
+                                            <p:message styleClass="col-3" for="opcion4"/>
+                                        </div>
+                                        <div style="display: flex; align-items: center;">
+                                            <p style="display: inline; margin: 0;">Valida:</p>
+                                            <p:toggleSwitch value="#{preguntaBean.respuesta4.valida}"
+                                                            style="margin-left: 10px;" id="valida4"/>
+                                        </div>
+                                    </div>
+                                </p:scrollPanel>
+                            </p:outputPanel>
+                        </p:outputPanel>
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Guardar" icon="pi pi-check"
+                                             actionListener="#{preguntaBean.savePregunta}"
+                                             update="manage-pregunta-content" process="manage-pregunta-content @this"/>
+                            <p:commandButton value="Cancelar" icon="pi pi-times"
+                                             onclick="PF('managePreguntaDialog').hide()"
+                                             class="ui-button-secondary"/>
+                        </f:facet>
+                    </p:dialog>
+
+                    <p:confirmDialog widgetVar="deletePreguntaDialog" showEffect="fade" width="300"
+                                     message="¿Eliminar la pregunta?" header="Confirmar" severity="warn">
+                        <p:commandButton value="Si" icon="pi pi-check" actionListener="#{preguntaBean.deletePregunta}"
+                                         process="@this" oncomplete="PF('deletePreguntaDialog').hide()"/>
+                        <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                                         onclick="PF('deletePreguntaDialog').hide()"/>
+                    </p:confirmDialog>
+
+                    <p:confirmDialog global="true" showEffect="fade" width="300">
+                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes"
+                                         icon="pi pi-check"/>
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"
+                                         icon="pi pi-times"/>
+                    </p:confirmDialog>
+                </div>
+            </h:form>
+        </section>
+    </ui:define>
+</ui:composition>
+</html>

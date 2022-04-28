@@ -1,0 +1,31 @@
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xml:lang="es" lang="es">
+<ui:composition template="../WEB-INF/template.xhtml">
+    <ui:define name="title">Inicio</ui:define>
+    <ui:define name="content">
+        <section class="container text-center">
+            <p:growl id="growl-general" showDetail="true"/>
+            <h1 class="display-1">Reglas de juego</h1>
+            <ul class="lead mt-5" style="list-style:none;">
+                <li>En cada nivel responderas una pregunta aleatoria</li>
+                <li>Cada pregunta solo tendra una opción valida</li>
+                <li>Cada que pases de nivel recibiras una recompensa acomulitativa</li>
+                <li>Podras retirarte en el momento que desees y recibiras el premio acomulado</li>
+                <li>Si respondes una pregunta mal perderas todo</li>
+            </ul>
+            <p class="lead">Dinero actual $#{seguridadBean.usuarioSesion.dinero}</p>
+            <a href="/usuario/juego.xhtml" class="btn btn-lg btn-amarillo mt-2" type="submit">
+                Iniciar juego
+            </a>
+        </section>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xml:lang="es" lang="es">
+<ui:composition template="../WEB-INF/template.xhtml">
+    <ui:define name="title">Historico de rondas</ui:define>
+    <ui:define name="content">
+        <section class="container text-center">
+            <p:dataTable var="ronda" value="#{rondaBean.listadoRondas}"
+                         rowStyleClass="text-left #{ronda.respuesta.valida ? 'valida' : 'invalida'}">
+                <p:column headerText="Fecha">
+                    <h:outputText value="#{ronda.fecha}"/>
+                </p:column>
+
+                <p:column headerText="Categoria">
+                    <h:outputText value="#{ronda.categoria.nombre}"/>
+                </p:column>
+
+                <p:column headerText="Nivel">
+                    <h:outputText value="#{ronda.categoria.nivel}"/>
+                </p:column>
+
+                <p:column headerText="Pregunta">
+                    <h:outputText value="#{ronda.pregunta.descripcion}"/>
+                </p:column>
+
+                <p:column headerText="Respuesta">
+                    <h:outputText value="#{ronda.respuesta.descripcion}"/>
+                </p:column>
+
+                <p:column headerText="Premio">
+                    <h:outputText value="#{ronda.categoria.dineroGanar}"/>
+                </p:column>
+
+            </p:dataTable>
+        </section>
+    </ui:define>
+</ui:composition>
+</html>
